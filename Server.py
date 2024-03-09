@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import Saa  # Import your Saa.py script
+import WSaa 
+import threading
 
 app = Flask(__name__)
 
@@ -20,9 +22,12 @@ def run_saa():
         return jsonify({'error': 'Invalid selection'}), 400
 
     # Run Saa.py with user input
-    result = Saa.run_saa(selected_hall, selected_pattern)
+    threading.Thread(target=WSaa.run_saa, args=(selected_hall, selected_pattern)).start()
+    result = WSaa.run_saa(selected_hall, selected_pattern)
 
     return jsonify({'result': result})
 
 if __name__ == '__main__':
+    frame = None
     app.run(debug=True)
+    WSaa.main(frame)

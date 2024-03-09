@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">   
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Web site created using create-react-app" />
+    <title>SAAFRT</title>
+</head>
+<body>
+    <h1>SAAFRT</h1>
+    <p>Seat Assignment Algorithms coupled with Facial recognition technology</p>
+    
+    <button id="runSaaBtn">Run SAAFRT</button>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#runSaaBtn').click(function() {
+                var requestData = {
+                    selected_hall: 'TLT',  // Update with user's selection
+                    selected_pattern: 'Checkerboard'  // Update with user's selection
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/run_saa',
+                    contentType: 'application/json',
+                    data: JSON.stringify(requestData),
+                    success: function(response) {
+                        // Handle successful response from server
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response from server
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
