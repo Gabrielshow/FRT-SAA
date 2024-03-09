@@ -12,6 +12,10 @@ class Seat:
         self.column = column
         self.occupied = occupied
         self.color = "white"
+    
+    def set_color(self, color):
+        """Set the color of the seat based on the pattern."""
+        self.color = color
 
 class SeatGrid:
     def __init__(self, rows, columns, spacing=2, seating_pattern=None):
@@ -42,10 +46,10 @@ class ChessBoardPattern:
                 # The first tile of each row starts with a different color
                 if j == 0:
                     # Alternate between red and white starting from the first row
-                    seat.color = "red" if i % 2 == 0 else "white"
+                    seat.set_color("red") if i % 2 == 0 else seat.set_color("white")
                 else:
                     # For the rest of the tiles, alternate between the starting tile's color and a different color
-                    seat.color = "red" if (i + j) % 2 == 0 else "white"
+                    seat.set_color("red") if (i + j) % 2 == 0 else seat.set_color("white")
                 # Mark the seat as occupied if it's colored
                 seat.occupied = seat.color == "red"
 
@@ -82,7 +86,8 @@ class SeatAssignmentApp:
         for i in range(len(seat_grid)):
             for j in range(len(seat_grid[i])):
                 seat = seat_grid[i][j]
-                self.update_color(seat, j % self.spacing == 0)
+                # Do not change the color based on spacing
+                # The color is already set by the pattern
                 if seat.occupied:
                     if student_counter < total_students:
                         seat.seat_number = matric_numbers[student_counter]
@@ -95,17 +100,11 @@ class SeatAssignmentApp:
                 label = tk.Label(self.frame, text=seat.seat_number, bg=seat.color, padx=5, pady=5)
                 label.grid(row=i, column=j)
                 self.root.after(2000, lambda seat=seat, label=label: self.update_color_after_delay(seat, label))
-
+                
     def update_color(self, seat, is_spacing):
-        if is_spacing:
-            seat.occupied = True
-        if seat.occupied:
-            seat.color = "yellow"
-        else:
-            seat.color = "white"
+        pass
 
     def update_color_after_delay(self, seat, label):
-        self.update_color(seat, seat.column % self.spacing == 0)
         label.configure(bg=seat.color)
 
     def run_saa(self, selected_hall, selected_pattern):
