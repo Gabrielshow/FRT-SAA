@@ -128,6 +128,19 @@ class SeatAssignmentApp:
 
     def update_color_after_delay(self, seat, label):
         label.configure(bg=seat.color)
+    
+    def get_grid_data(self, seat_grid):
+        grid_data = []
+        for row in seat_grid:
+            row_data = []
+            for seat in row:
+                row_data.append({
+                    'seat_number': seat.seat_number,
+                    'occupied': seat.occupied,
+                    'color': seat.color
+                })
+            grid_data.append(row_data)
+        return grid_data
 
     def run_saa(self, selected_hall, selected_pattern):
          self.update_seat_grid(selected_hall, selected_pattern)
