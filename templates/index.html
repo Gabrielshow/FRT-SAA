@@ -2,9 +2,11 @@
 <html>
 <head>
     <title>Seat Assignment</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
+    <div class="form-container">
     <form id="seatAssignmentForm">
         <label for="selected_hall">Select Hall:</label>
         <select id="selected_hall" name="selected_hall">
@@ -18,18 +20,9 @@
         </select>
         <button type="submit">Submit</button>
     </form>
+    </div>
 
-    <script>
-        $(document).ready(function() {
-            $("#seatAssignmentForm").on("submit", function(event) {
-                event.preventDefault();
-                var formData = $(this).serialize();
-                $.post("/run_saa", formData, function(data) {
-                    console.log(data);
-                    // Handle response here
-                });
-            });
-        });
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
     </script>
 </body>
 </html>

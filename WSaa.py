@@ -104,6 +104,10 @@ def update_color_after_delay(seat, label):
     label.configure(bg=seat.color)
 
 
+def run_saa(selected_hall, selected_pattern):
+   update_seat_grid(selected_hall, selected_pattern, frame)
+    
+    # Return the result or perform further operations
             
 def main():
     global frame
@@ -123,10 +127,6 @@ def main():
     
 # Saa.py
 
-def run_saa(selected_hall, selected_pattern):
-   update_seat_grid(selected_hall, selected_pattern, frame)
-    
-    # Return the result or perform further operations
    
 if __name__ == "__main__":
     main()
