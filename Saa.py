@@ -1,9 +1,9 @@
 import tkinter as tk
 import tkinter.simpledialog as sd
-import tkinter.messagebox as messagebox
 from tkinter import ttk
 
 matric_numbers = ['A1', 'B7', 'C3', 'D9', 'E8', 'D6', 'A2']
+
 class Seat:
     def __init__(self, seat_number, row, column, occupied=False):
         self.seat_number = seat_number
@@ -41,38 +41,21 @@ class ChessBoardPattern:
                 if (i + j) % 2 == 0:
                     seat.occupied = True
                     seat.color = "yellow"
-#                 if i % 2 == 0 and j % 2 == 0: #Dark Squares
-#                     seat.occupied = True
-#                     seat.color = "yellow"
-#                 elif i % 2 == 1 and j % 2 == 1: #Dark squares on odd rows
-#                     seat.occupied = True
-#                     seat.color = "yellow"
-     
-#     def assign_seat(self, student):
-#         for row in self.seat_grid:
-#             for seat in row:
-#                 if not seat.occupied:
-#                     seat.occupied = True
-#                     return seat.seat_number
-#                 
-#         return None
-                    
+
+def select_hall():
+    selected_hall = sd.askstring("Select Hall", "Select Hall:\nTLT\nFLT")
+    return selected_hall
+
 def select_seating_pattern():
     selected_pattern = sd.askstring("Seating Pattern", "Select Seating Pattern:\nCheckerboard\nZigzag")
     return selected_pattern
 
-def create_combobox(hall_names, var, frame):
-    combobox = ttk.Combobox(frame, textvariable = var, values=hall_names)
-    combobox.grid(row=0, column=0)
-    combobox.bind("<<ComboboxSelected>>", lambda _: update_seat_grid(var.get()))
-    
-def update_seat_grid(selected_hall):
-    selected_pattern = select_seating_pattern()
+def update_seat_grid(selected_hall, selected_pattern):
     hall_data = get_hall_data(selected_pattern)
     hall_seat_grid = hall_data[selected_hall]
     hall_seat_grid.apply_seating_pattern()
-    update_gui(hall_seat_grid.seat_grid, frame)   # There should be a third argument hall_seat_grid.aisle_width
-    
+    update_gui(hall_seat_grid.seat_grid, frame)
+
 def get_hall_data(selected_pattern):
     if selected_pattern == "Checkerboard":
         hall_data = {
@@ -127,20 +110,21 @@ def main():
     spacing = 2
     root = tk.Tk()
     root.title("Exam Hall Seating")
-    hall_data = get_hall_data()
-    hall_names = list(hall_data.keys())
-    selected_hall = sd.askstring("Seating Pattern", "Select Seating Pattern:\n" + "\n".join(hall_names))
-    if selected_hall not in hall_names:
-        messagebox.showerror("Error", "Invalid Selection")
+    selected_hall = select_hall()
+    if selected_hall not in ["TLT", "FLT"]:
+        tk.messagebox.showerror("Error", "Invalid Hall Selected")
         root.destroy()
         return
-    
-    var = tk.StringVar()
-    var.set(selected_hall)
+
+    selected_pattern = select_seating_pattern()
+    if selected_pattern not in ["Checkerboard", "Zigzag"]:
+        tk.messagebox.showerror("Error", "Invalid Seating Pattern Selected")
+        root.destroy()
+        return
+
     frame = ttk.Frame(root, padding="10")
     frame.grid(row=0, column=0,sticky=(tk.W, tk.E, tk.N, tk.S))
-#   update_gui(seat_grid.seat_grid, frame)
-    update_seat_grid(selected_hall)
+    update_seat_grid(selected_hall, selected_pattern)
     root.mainloop()
     
 if __name__ == "__main__":
