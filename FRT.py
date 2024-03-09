@@ -28,15 +28,33 @@ class SeatGrid:
     def apply_seating_pattern(self):
         if self.seating_pattern:
             self.seating_pattern.apply_pattern(self.seat_grid)
-            
-class ZigZagPattern:
+
+class TwoEmptySpacesPattern:
+    def apply_pattern(self, seat_grid):
+        for i in range(len(seat_grid)):
+            for j in range(len(seat_grid[i])):
+                seat = seat_grid[i][j]
+                # The first tile of each row is always occupied
+                if j == 0:
+                    seat.occupied = True
+                    seat.set_color("yellow") # Example color for occupied seats
+                # Every occupied seat is followed by two unoccupied seats
+                elif j % 3 == 0:
+                    seat.occupied = True
+                    seat.set_color("yellow")
+                else:
+                    seat.occupied = False
+                    seat.set_color("white")
+
+
+class NormalPattern:
     def apply_pattern(self, seat_grid):
         for i in range(len(seat_grid)):
             for j in range(len(seat_grid[i])):
                 seat = seat_grid[i][j]
                 if i == 0 and j % 2 == 0:
                     seat.occupied = True
-                    seat.color = "yellow"
+                    seat.color = "blue"
                     
 class ChessBoardPattern:
     def apply_pattern(self, seat_grid):
@@ -71,10 +89,14 @@ class SeatAssignmentApp:
             hall_data = {
                 "TLT" : SeatGrid(20, 30, 2, ChessBoardPattern()),
                 "FLT" : SeatGrid(15, 5, 2, ChessBoardPattern())}
-        elif selected_pattern == "Zigzag":
+        elif selected_pattern == "Normal":
             hall_data = {
-                "TLT" : SeatGrid(20, 30, 2, ZigZagPattern()),
-                "FLT" : SeatGrid(15, 5, 2, ZigZagPattern())}
+                "TLT" : SeatGrid(20, 30, 2, NormalPattern()),
+                "FLT" : SeatGrid(15, 5, 2, NormalPattern())}
+        elif selected_pattern == "TwoEmptySpaces":
+            hall_data = {
+                "TLT" : SeatGrid(20, 30, 2, TwoEmptySpacesPattern()),
+                "FLT" : SeatGrid(15, 5, 2, TwoEmptySpacesPattern())}
         else:
             raise ValueError("Invalid seating pattern selected.")
         return hall_data
