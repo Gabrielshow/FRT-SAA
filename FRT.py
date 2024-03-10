@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.simpledialog as sd
 from tkinter import ttk
 import sys
+import json
 
 matric_numbers = ['A1', 'B7', 'C3', 'D9', 'E8', 'D6', 'A2']
 
@@ -77,12 +78,13 @@ class SeatAssignmentApp:
         self.frame = ttk.Frame(root, padding="10")
         self.frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         self.spacing = 2 # Define spacing as an attribute of the class
+        self.seat_grid_instance = None
 
     def update_seat_grid(self, selected_hall, selected_pattern):
         hall_data = self.get_hall_data(selected_pattern)
-        hall_seat_grid = hall_data[selected_hall]
-        hall_seat_grid.apply_seating_pattern()
-        self.update_gui(hall_seat_grid.seat_grid)
+        self.seat_grid_instance = hall_data[selected_hall] # Store the SeatGrid instance
+        self.seat_grid_instance.apply_seating_pattern()
+        self.update_gui(self.seat_grid_instance.seat_grid)
     
     def get_hall_data(self, selected_pattern):
         if selected_pattern == "Checkerboard":
@@ -141,6 +143,11 @@ class SeatAssignmentApp:
                 })
             grid_data.append(row_data)
         return grid_data
+    
+    def get_grid_data_json(self, selected_hall, selected_pattern):
+        self.update_seat_grid(selected_hall, selected_pattern)
+        grid_data = self.get_grid_data(self.seat_grid_instance.seat_grid)
+        return json.dumps(grid_data)
 
     def run_saa(self, selected_hall, selected_pattern):
          self.update_seat_grid(selected_hall, selected_pattern)
@@ -157,6 +164,10 @@ def main():
     app = SeatAssignmentApp(root)
     app.run_saa(selected_hall, selected_pattern) # Define selected_hall and selected_pattern before calling
     root.mainloop()
+    def get_grid_data_json(selected_hall, selected_pattern):
+        root = tk.Tk()
+        app = SeatAssignmentApp(root)
+    return app.get_grid_data_json(selected_hall, selected_pattern)
 
 if __name__ == "__main__":
     main()
