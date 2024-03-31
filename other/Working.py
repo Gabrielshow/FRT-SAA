@@ -39,15 +39,9 @@ class ChessBoardPattern:
         for i in range(len(seat_grid)):
             for j in range(len(seat_grid[i])):
                 seat = seat_grid[i][j]
-                # The first tile of each row starts with a different color
-                if j == 0:
-                    # Alternate between red and white starting from the first row
-                    seat.color = "red" if i % 2 == 0 else "white"
-                else:
-                    # For the rest of the tiles, alternate between the starting tile's color and a different color
-                    seat.color = "red" if (i + j) % 2 == 0 else "white"
-                # Mark the seat as occupied if it's colored
-                seat.occupied = seat.color == "red"
+                if (i + j) % 2 == 0:
+                    seat.occupied = True
+                    seat.color = "yellow"
 
 class SeatAssignmentApp:
     def __init__(self, root):

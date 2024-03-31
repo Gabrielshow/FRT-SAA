@@ -59,6 +59,30 @@ form button:hover {
     background-color: #0056b3;
 }
 
+.exam-hall {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 5px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+.seat {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+}
+
+.seat span {
+    font-size: 0.8em;
+}
+
 /* Add some responsiveness */
 @media (max-width: 768px) {
     .form-container {

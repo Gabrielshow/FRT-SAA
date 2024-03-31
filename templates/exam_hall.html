@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exam Hall Seating</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="exam-hall">
+        {% for row in seating_data %}
+        <div class="row">
+            {% for seat in row %}
+            <div class="seat" style="background-color: {{ seat.color }};">
+                <span>{{ seat.seat_number }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
