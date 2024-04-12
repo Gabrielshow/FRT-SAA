@@ -5,6 +5,7 @@ $(document).ready(function() {
         $.post("/run_saa", formData, function(data) {
             console.log(data);
             // Handle response here
+            window.location.href = "/exam_hall";
         });
     });
 });

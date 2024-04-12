@@ -153,21 +153,23 @@ class SeatAssignmentApp:
          self.update_seat_grid(selected_hall, selected_pattern)
 
 def main():
-    if len(sys.argv) != 3:
-        print("Usage: python saa.py <selected_hall> <selected_pattern>")
-        sys.exit(1)
+    try:
+        if len(sys.argv) != 3:
+            print("Usage: python saa.py <selected_hall> <selected_pattern>")
+            sys.exit(1)
 
-    selected_hall = sys.argv[1]
-    selected_pattern = sys.argv[2]
-    root = tk.Tk()
-    root.title("Exam Hall Seating")
-    app = SeatAssignmentApp(root)
-    app.run_saa(selected_hall, selected_pattern) # Define selected_hall and selected_pattern before calling
-    root.mainloop()
-    def get_grid_data_json(selected_hall, selected_pattern):
+        selected_hall = sys.argv[1]
+        selected_pattern = sys.argv[2]
         root = tk.Tk()
+        root.title("Exam Hall Seating")
         app = SeatAssignmentApp(root)
-    return app.get_grid_data_json(selected_hall, selected_pattern)
+        app.run_saa(selected_hall, selected_pattern) # Define selected_hall and selected_pattern before calling
+        json_data = app.get_grid_data_json(selected_hall, selected_pattern)
+        root.mainloop()
+        return json_data
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt detected. Exiting...")
+        sys.exit(0)  # Exit gracefully
 
 if __name__ == "__main__":
     main()

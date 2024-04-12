@@ -28,6 +28,4 @@ def run_saa():
     return jsonify({'result': result})
 
 if __name__ == '__main__':
-    frame = None
     app.run(debug=True)
-    WSaa.main(frame)

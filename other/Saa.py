@@ -102,6 +102,28 @@ def update_color(seat, is_spacing):
 def update_color_after_delay(seat, label):
     update_color(seat, seat.column % spacing == 0)
     label.configure(bg=seat.color)
+
+# Saa.py
+
+def run_saa(selected_hall, selected_pattern):
+    # Perform operations based on selected hall and pattern
+    # For example:
+    if selected_hall == 'TLT':
+        # Do something for TLT
+        pass
+    elif selected_hall == 'FLT':
+        # Do something for FLT
+        pass
+
+    if selected_pattern == 'Checkerboard':
+        # Do something for Checkerboard
+        pass
+    elif selected_pattern == 'Zigzag':
+        # Do something for Zigzag
+        pass
+    
+    # Return the result or perform further operations
+
             
 def main():
     global frame
@@ -121,6 +143,7 @@ def main():
         tk.messagebox.showerror("Error", "Invalid Seating Pattern Selected")
         root.destroy()
         return
+    run_saa(selected_hall, selected_pattern)
 
     frame = ttk.Frame(root, padding="10")
     frame.grid(row=0, column=0,sticky=(tk.W, tk.E, tk.N, tk.S))
