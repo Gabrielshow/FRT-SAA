@@ -18,6 +18,14 @@ def favicon():
 def index():
     return render_template('index.html')
 
+@app.route('/get_grid_data', methods=['POST'])
+def get_grid_data():
+    data = request.get_json()
+    selected_hall = data.get('selected_hall')
+    selected_pattern = data.get('selected_pattern')
+    grid_data = get_grid_data_json(selected_hall, selected_pattern)
+    return jsonify(grid_data)
+
 @app.route('/exam_hall')
 def exam_hall():
     # Render the exam_hall.html template
@@ -41,7 +49,7 @@ def run_saa():
 def get_grid_data_json(selected_hall, selected_pattern):
     root = tk.Tk()
     app = SeatAssignmentApp(root)
-    return app.get_grid_data_json(selected_hall, selected_pattern)
+    return json.loads(app.get_grid_data_json(selected_hall, selected_pattern))
 
 if __name__ == '__main__':
     app.run(debug=True)

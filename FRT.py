@@ -117,9 +117,9 @@ class SeatAssignmentApp:
                         seat.seat_number = matric_numbers[student_counter]
                         student_counter += 1
                     else:
-                        seat.seat_number = "Empty"
+                        seat.seat_number = "EY"
                 else:
-                    seat.seat_number = "Empty"
+                    seat.seat_number = "EY"
             
                 label = tk.Label(self.frame, text=seat.seat_number, bg=seat.color, padx=5, pady=5)
                 label.grid(row=i, column=j)
