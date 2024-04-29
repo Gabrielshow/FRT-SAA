@@ -1,57 +1,77 @@
-import sqlite3
-import json
-import os
+from cloudinary import Cloudinary
+from sqlalchemy import create_engine, Column, String, Integer
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-# Define the path to the SQLite database file
-DATABASE_FILE = "students.db"
+# Cloudinary Configuration (replace with your credentials)
+          
+cloudinary = Cloudinary( 
+  cloud_name = "dkawqqn2t", 
+  api_key = "419534474133122", 
+  api_secret = "Fasz5lBBVwEj2Jy2n9Z0AiC-v8U" 
+)
 
-# Function to initialize the database schema
-def initialize_database():
-    if not os.path.exists(DATABASE_FILE):
-        conn = sqlite3.connect(DATABASE_FILE)
-        cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE students (
-                            id INTEGER PRIMARY KEY,
-                            name TEXT NOT NULL,
-                            department TEXT NOT NULL,
-                            matric_number TEXT NOT NULL,
-                            level INTEGER NOT NULL,
-                            image_path TEXT NOT NULL
-                          )''')
-        conn.commit()
-        conn.close()
+# Database connection (replace with your database details)
+engine = create_engine('sqlite:///students.db')
+Base = declarative_base()
 
-# Function to insert student data into the database
-def insert_student_data(name, department, matric_number, level, image_path):
-    conn = sqlite3.connect(DATABASE_FILE)
-    cursor = conn.cursor()
-    cursor.execute('''INSERT INTO students (name, department, matric_number, level, image_path)
-                      VALUES (?, ?, ?, ?, ?)''', (name, department, matric_number, level, image_path))
-    conn.commit()
-    conn.close()
+# Define the Student model
+class Student(Base):
+    __tablename__ = 'students'
 
-# Function to create seat identities for students
-def create_seat_identities():
-    seat_identities = {}
-    conn = sqlite3.connect(DATABASE_FILE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT matric_number FROM students")
-    rows = cursor.fetchall()
-    for row in rows:
-        seat_id = "A" + str(hash(row[0]) % 1000)  # Create a unique seat identity based on the hash of matric number
-        seat_identities[row[0]] = seat_id
-    conn.close()
-    return seat_identities
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    matric_number = Column(String, unique=True)
+    level = Column(String)
+    department = Column(String)
+    image_url = Column(String, nullable=True)  # Optional image URL
 
-# Example function to use in your application
-def main():
-    initialize_database()
-    # Insert sample student data (replace with actual data)
-    insert_student_data("John Doe", "Computer Science", "123456", 300, "images/john_doe.jpg")
-    insert_student_data("Jane Smith", "Electrical Engineering", "789012", 200, "images/jane_smith.jpg")
-    # Create seat identities for students
-    seat_identities = create_seat_identities()
-    print(json.dumps(seat_identities, indent=4))
+# Create all tables (if not already created)
+Base.metadata.create_all(engine)
 
-if __name__ == "__main__":
-    main()
+# Define the upload folder for student images (replace with your desired location)
+upload_folder = "student_images/"
+
+
+def upload_and_get_url(image_filename):
+  # Upload the image to Cloudinary
+  upload_result = cloudinary.uploader.upload(
+      upload_folder + image_filename,
+      public_id=image_filename  # Use filename as public ID for simplicity
+  )
+
+  # Extract the public ID from the upload result
+  public_id = upload_result["public_id"]
+
+  # Generate URL with desired options (width, height, crop)
+  url, options = cloudinary_url(public_id, width=150, height=150, crop="fill")
+
+  return url
+
+
+def create_student(name, matric_number, level, department, image_filename):
+  # Upload image and get URL
+  image_url = upload_and_get_url(image_filename)
+
+  # Create a database session
+  Session = sessionmaker(bind=engine)
+  session = Session()
+
+  # Create a new student object
+  new_student = Student(name=name, matric_number=matric_number, level=level, department=department, image_url=image_url)
+
+  # Add the student to the session
+  session.add(new_student)
+
+  # Commit changes to the database
+  session.commit()
+
+  # Close the session
+  session.close()
+
+
+# Example usage (replace with your actual data)
+create_student("Elyana Doe", "207441", "Sophomore", "Electrical and Electronics Engineering", "Elyana_doe.jpg")
+create_student("Jane Doe", "207890", "Freshman", "Electrical and Electronics Engineering", "Jane_doe.png")
+
+print("Students added to database!")
