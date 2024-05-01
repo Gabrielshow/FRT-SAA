@@ -5,10 +5,24 @@ import json
 from flask_cors import CORS
 import tkinter as tk
 from FRT import SeatAssignmentApp
+import numpy as np
+import cv2
+from multiprocessing import Value
 
 app = Flask(__name__)
 CORS(app)
 
+counter = Value('i', 0)
+def save_img(img):
+	with counter.get_lock():
+		counter.value += 1
+		count = counter.value
+	img_dir = "esp32_imgs"
+	if not os.path.isdir(img_dir):
+		os.mkdir(img_dir)
+	cv2.imwrite(os.path.join(img_dir,"img_"+str(count)+".jpg"), img)
+	# print("Image Saved", end="\n") # debug
+ 
 # Serve favicon
 @app.route('/favicon.ico')
 def favicon():
@@ -17,6 +31,25 @@ def favicon():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/upload', methods=['POST','GET'])
+def upload():
+	received = request
+	img = None
+	if received.files:
+		print(received.files['imageFile'])
+		# convert string of image data to uint8
+		file  = received.files['imageFile']
+		nparr = np.fromstring(file.read(), np.uint8)
+		# decode image
+		img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+		save_img(img)
+		
+		return "[SUCCESS] Image Received", 201
+	else:
+		return "[FAILED] Image Not Received", 204
+
+
 
 @app.route('/get_grid_data', methods=['POST'])
 def get_grid_data():
