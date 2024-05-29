@@ -87,4 +87,4 @@ def get_grid_data_json(selected_hall, selected_pattern):
     return json.loads(app.get_grid_data_json(selected_hall, selected_pattern))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
