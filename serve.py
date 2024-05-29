@@ -8,6 +8,7 @@ from FRT import SeatAssignmentApp
 import numpy as np
 import cv2
 from multiprocessing import Value
+# from model import model
 
 app = Flask(__name__)
 CORS(app)
@@ -57,6 +58,7 @@ def get_grid_data():
     selected_hall = data.get('selected_hall')
     selected_pattern = data.get('selected_pattern')
     grid_data = get_grid_data_json(selected_hall, selected_pattern)
+    
     return jsonify(grid_data)
 
 @app.route('/exam_hall')

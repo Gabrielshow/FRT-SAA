@@ -11,6 +11,8 @@ counter    = 0
 
 # Load pre-trained Haar Cascade classifier for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+recognizer = cv2.face.LBPHFaceRecognizer_create()
+recognizer.read("./face_database.xml")  # Replace 'path_to_your_trained_recognizer.xml' with the actual path
 
 # Function to detect faces in an image
 def detect_faces(image):
@@ -57,6 +59,10 @@ def server_program():
         if frame is not None:
             faces = detect_faces(frame)
             for (x, y, w, h) in faces:
+                face_image = frame[y:y+h, x:x+w]
+                gray_face = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+                label, _ = recognizer.predict(gray_face)
+                cv2.putText(frame, f'Label: {label}', (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 2)
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
             time.sleep(0.09)
             global counter

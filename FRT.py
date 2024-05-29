@@ -4,6 +4,11 @@ from tkinter import ttk
 import sys
 import json
 import math
+import sqlite3
+import string
+import random
+
+DATABASE_URL = "students.db"
 
 matric_numbers = ['A1', 'B7', 'C3', 'D9', 'E8', 'D6', 'A2']
 
@@ -105,10 +110,50 @@ class SeatAssignmentApp:
         self.spacing = 2 # Define spacing as an attribute of the class
         self.seat_grid_instance = None
 
+    def get_student_seat_numbers(self):
+        # Connect to the database
+        connection = sqlite3.connect(DATABASE_URL)
+        cursor = connection.cursor()
+        print("Connected to database successfully!")
+
+          # Check if the table exists
+        # cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='students'")
+        # table_exists = cursor.fetchone() is not None
+
+        # if not table_exists:
+        #     print("Error: 'students' table not found in the database!")
+        #     return []  # Return empty list to indicate error
+
+        # # Fetch matric numbers from the database (replace 'students' with your table name)
+        cursor.execute("SELECT matric_number FROM students")
+        matric_numbers = cursor.fetchall()
+        print("Fetched matric numbers:", matric_numbers)
+        # Print the executed query for verification (optional)
+        # print("Executed query:", cursor.execute("SELECT matric_number FROM students"))
+
+        two_character_ids = []
+        characters = string.ascii_uppercase + string.digits
+        used_ids = set()
+        for matric_number in matric_numbers:
+            while True:
+            # Generate a random two-character ID
+                id = random.choice(characters) + random.choice(characters)
+                if id not in used_ids:
+                    used_ids.add(id)
+                    two_character_ids.append(id)
+                    break
+
+        # Close the database connection
+        connection.close()
+
+        return two_character_ids
+
     def update_seat_grid(self, selected_hall, selected_pattern):
         hall_data = self.get_hall_data(selected_pattern)
         self.seat_grid_instance = hall_data[selected_hall] # Store the SeatGrid instance
         self.seat_grid_instance.apply_seating_pattern()
+        # two_char_ids = self.get_student_seat_numbers()
+        # print(two_char_ids)
         self.update_gui(self.seat_grid_instance.seat_grid)
     
     def get_hall_data(self, selected_pattern):
@@ -180,6 +225,39 @@ class SeatAssignmentApp:
 
     def run_saa(self, selected_hall, selected_pattern):
          self.update_seat_grid(selected_hall, selected_pattern)
+
+# def generate_unique_ids(matric_numbers):
+#     # Implement your logic here to generate unique two-character IDs from matric numbers
+#     # This is an example implementation that might need adjustments
+
+#     unique_ids = []
+#     used_chars = set()
+#     for matric_number in matric_numbers:
+
+# def generate_unique_ids(matric_numbers):
+#   """
+#   Generates unique two-character IDs using letters and numbers.
+
+#   Args:
+#       matric_numbers: A list of matric numbers.
+
+#   Returns:
+#       A list of unique two-character IDs with length equal to the number of matric numbers.
+#   """
+#   used_ids = set()
+#   unique_ids = []
+#   characters = string.ascii_uppercase + string.digits
+
+#   for matric_number in matric_numbers:
+#     while True:
+#       # Generate a random two-character ID
+#       id = random.choice(characters) + random.choice(characters)
+#       if id not in used_ids:
+#         used_ids.add(id)
+#         unique_ids.append(id)
+#         break
+
+#   return unique_ids
 
 def main():
     try:
