@@ -54,6 +54,9 @@ const char* password = "brilliancy";
 int led_duty = 15;
 
 const char *server_ip = "192.168.167.53";
+// 192.168.94.216 --valid address
+// 216.24.57.252
+// 216.24.57.4
 uint16_t server_port = 5000;
 
 WiFiClient client;
